@@ -1,0 +1,22 @@
+{
+  "name": "jest_testing_p2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PJDEVEX/Jest_testing_p2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PJDEVEX/Jest_testing_p2/issues"
+  },
+  "homepage": "https://github.com/PJDEVEX/Jest_testing_p2#readme",
+  "description": "",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
