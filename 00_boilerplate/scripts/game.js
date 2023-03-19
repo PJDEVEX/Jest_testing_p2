@@ -6,11 +6,39 @@ let game = {
     // current game progress
     playerMoves: [], // Initialize an empty array to store 
     // player moves
-    choices: ["button1", "button2", "button3", "button4"], 
+    choices: ["button1", "button2", "button3", "button4"],
     // Initialize an array with the available choices
 };
 
+/**
 
-// This exports the "game" object so that other files 
+Resets the game by setting the score to zero,
+and clearing the playerMoves and currentGame arrays.
+Calls the showScore function to display the updated score on the page.
+@function
+@name newGame
+*/
+function newGame() {
+    game.score = 0;
+    game.playerMoves = [];
+    game.currentGame = [];
+    showScore();
+}
+
+/**
+
+Sets the inner text of the HTML element with the id "score"
+to the value of the score property of the game object.
+@function
+@name showScore
+*/
+function showScore() {
+    document.getElementById("score").innerText = game.score;
+}
+
+// This exports the "game", "newGame", & showScore 
+// object so that other files 
 // can access it
-module.exports = { game };
+module.exports = { game, newGame, showScore };
+
+
