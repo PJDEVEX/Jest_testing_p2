@@ -35,9 +35,9 @@ function newGame() {
 function addTurn() {
     game.playerMoves = [];
     game.currentGame.push(game.choices[(Math.floor(Math.random() * 4))]);
-    // showTurn();
+    showTurn();
 }
- 
+
 
 
 /**
@@ -69,17 +69,62 @@ function lightsOn(circ) {
 }
 
 /**
+ * Updates the game's turnNumber variable to 0 and then plays the current game sequence
+ * by calling the lightsOn() function for each element in the game.currentGame array
+ * at an interval of 800 milliseconds. The game.turnNumber variable is incremented
+ * for each element in the array, and clearInterval() is called when the end of the array
+ * is reached.
+ *
+ * @function
+ * @name showTurn
+ * @global
+ * 
+ * @property {object} game - The game object containing the current game state.
+ * @property {number} game.turnNumber - The current turn number.
+ * @property {array} game.currentGame - The current game sequence to play.
+ * 
+ * @returns {undefined}
+ *
+ */
+function showTurn() {
+    game.turnNumber = 0;
+    let turn = setInterval(() => {
+        lightsOn(game.currentGame[game.turnNumber]);
+        game.turnNumber++;
+        if (game.turnNumber >= game.currentGame.length) {
+            clearInterval(turn);
+        }
+    }, 800);
+}
 
-This exports the "game", "newGame", "showScore", "addTurn", and "lightsOn"
-functions as an object so that other files can access them.
-@module simonGame
-@exports game
-@exports newGame
-@exports showScore
-@exports addTurn
-@exports lightsOn
-*/
-module.exports = { game, newGame, showScore, addTurn, lightsOn };
+/**
+ * Exports the game-related functions as an object so that they can be accessed by other files.
+ * 
+ * @module simonGame
+ * @exports game - The game object containing the current game state.
+ * @exports newGame - A function that creates a new game and resets the game state.
+ * @exports showScore - A function that displays the player's current score.
+ * @exports addTurn - A function that adds a new turn to the game sequence and updates the game state.
+ * @exports lightsOn - A function that turns on the corresponding lights and plays the sound for a given color.
+ * @exports showTurn - A function that plays the current game sequence.
+ * 
+ * @type {object}
+ * @property {object} game - The game object containing the current game state.
+ * @property {function} newGame - A function that creates a new game and resets the game state.
+ * @property {function} showScore - A function that displays the player's current score.
+ * @property {function} addTurn - A function that adds a new turn to the game sequence and updates the game state.
+ * @property {function} lightsOn - A function that turns on the corresponding lights and plays the sound for a given color.
+ * @property {function} showTurn - A function that plays the current game sequence.
+ */
+module.exports = {
+    game,
+    newGame,
+    showScore,
+    addTurn,
+    lightsOn,
+    showTurn
+};
+
 
 
 

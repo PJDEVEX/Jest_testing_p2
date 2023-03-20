@@ -1,15 +1,16 @@
 /**
+ * Imports the game-related objects and functions from the parent directory's "game.js" file.
+ * 
+ * @type {object}
+ * @property {object} game - The game object that holds game data.
+ * @property {function} newGame - The function that resets the game and starts a new one.
+ * @property {function} showScore - The function that displays the game score on the webpage.
+ * @property {function} addTurn - The function that adds a new turn to the game.
+ * @property {function} lightsOn - The function that lights up the game buttons.
+ * @property {function} showTurn - The function that plays the current game sequence.
+ */
+const { game, newGame, showScore, addTurn, lightsOn, showTurn } = require("../game");
 
-Imports the "game", "newGame" & "showScore" objects from a file located
-in the parent directory's "game.js" file.
-@type {object}
-@property {object} game - The game object that holds game data.
-@property {function} newGame - The function that resets the game and starts a new one.
-@property {function} showScore - The function that displays the game score on the webpage.
-@property {function} addTurn - The function that adds a new turn to the game.
-@property {function} lightsOn - The function that lights up the game buttons.
-*/
-const { game, newGame, showScore, addTurn, lightsOn } = require("../game");
 
 
 /**
@@ -179,4 +180,15 @@ describe("gameplay works correctly", () => {
         lightsOn(game.currentGame[0]);
         expect(button.classList).toContain("light");
     });
+
+    test("showTurn should update game.turnNumber", () => {
+        // Set the initial value of game.turnNumber to 42
+        game.turnNumber = 42;
+      
+        // Call the showTurn function
+        showTurn();
+      
+        // Expect the value of game.turnNumber to be 0
+        expect(game.turnNumber).toBe(0);
+      });
 });
