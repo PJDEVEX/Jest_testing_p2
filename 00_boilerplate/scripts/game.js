@@ -23,7 +23,22 @@ function newGame() {
     game.playerMoves = [];
     game.currentGame = [];
     showScore();
+    addTurn();
 }
+
+/** 
+ * Generates a random move and adds it to the end of the
+ * current game array. Clears the player moves array.
+ * @function
+ * @name addTurn
+*/
+function addTurn() {
+    game.playerMoves = [];
+    game.currentGame.push(game.choices[(Math.floor(Math.random() * 4))]);
+    // showTurn();
+}
+ 
+
 
 /**
 
@@ -36,9 +51,35 @@ function showScore() {
     document.getElementById("score").innerText = game.score;
 }
 
-// This exports the "game", "newGame", & showScore 
-// object so that other files 
-// can access it
-module.exports = { game, newGame, showScore };
+/**
+
+Adds a "light" class to the element with the ID matching the circ parameter.
+This will highlight the button associated with the current game sequence.
+After 400 milliseconds, the "light" class is removed from the element,
+turning off the button highlight.
+@function
+@name lightsOn
+@param {string} circ - The ID of the button to be highlighted.
+*/
+function lightsOn(circ) {
+    document.getElementById(circ).classList.add("light");
+    setTimeout(() => {
+        document.getElementById(circ).classList.remove.apply("light");
+    }, 400);
+}
+
+/**
+
+This exports the "game", "newGame", "showScore", "addTurn", and "lightsOn"
+functions as an object so that other files can access them.
+@module simonGame
+@exports game
+@exports newGame
+@exports showScore
+@exports addTurn
+@exports lightsOn
+*/
+module.exports = { game, newGame, showScore, addTurn, lightsOn };
+
 
 

@@ -1,6 +1,16 @@
-// imports the "game", "newGame" & showScore  object from 
-// a file located in the parent directory's "game.js" 
-const { game, newGame, showScore } = require("../game");
+/**
+
+Imports the "game", "newGame" & "showScore" objects from a file located
+in the parent directory's "game.js" file.
+@type {object}
+@property {object} game - The game object that holds game data.
+@property {function} newGame - The function that resets the game and starts a new one.
+@property {function} showScore - The function that displays the game score on the webpage.
+@property {function} addTurn - The function that adds a new turn to the game.
+@property {function} lightsOn - The function that lights up the game buttons.
+*/
+const { game, newGame, showScore, addTurn, lightsOn } = require("../game");
+
 
 /**
  * @jest-environment jsdom
@@ -90,17 +100,17 @@ describe("newGame works correctly", () => {
         expect(game.score).toEqual(0);
     });
     /**
-     * The test checks if the player move is set to 
-     * empty after calling the newGame function.
+     * The test checks if the current game is set to 
+     * 1 after calling the newGame function.
      */
-    test("should clear the playerMove array", () => {
-        expect(game.playerMoves.length).toBe(0);
+    test("should be one move in the computer's game array", () => {
+        expect(game.currentGame.length).toBe(1);
     });
     /**
  * The test checks if the player move is set to 
  * empty after calling the newGame function.
  */
-    test("should clear the Currentgame array", () => {
+    test("should clear the player move array", () => {
         expect(game.playerMoves.length).toBe(0);
     });
 
@@ -116,5 +126,57 @@ describe("newGame works correctly", () => {
     */
     test("should display 0 for the element with id of score", () => {
         expect(document.getElementById("score").innerText).toEqual(0);
+    });
+});
+
+/**
+
+Describes a test suite for the gameplay of the game.
+
+Before each test in the suite, it sets the game score to zero, clears
+
+the currentGame and playerMoves arrays, and adds a turn to the game.
+
+After each test in the suite, it sets the game score to zero, and clears
+
+the currentGame and playerMoves arrays.
+*/
+describe("gameplay works correctly", () => {
+    beforeEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+        addTurn();
+    });
+
+    afterEach(() => {
+        game.score = 0;
+        game.currentGame = [];
+        game.playerMoves = [];
+    });
+
+    /**
+     * Test to check if a new turn is added to the 
+     * game when addTurn function is called.
+     * It adds a turn by pushing a random choice 
+     * to the currentGame array.
+     * @function
+     * @name addTurn
+    */
+    test("addTurn adds a new turn to the game", () => {
+        addTurn();
+        expect(game.currentGame.length).toBe(2);
+    });
+    /**
+    
+    Test whether the lightsOn function adds the "light" class to the button corresponding
+    to the first item in the currentGame array.
+    @function
+    @name shouldAddCorrectClassToLightUpTheButtons
+    */
+    test("should add correct class to light up the buttons", () => {
+        let button = document.getElementById(game.currentGame[0]);
+        lightsOn(game.currentGame[0]);
+        expect(button.classList).toContain("light");
     });
 });
