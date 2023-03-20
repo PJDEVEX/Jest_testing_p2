@@ -128,7 +128,24 @@ describe("newGame works correctly", () => {
     test("should display 0 for the element with id of score", () => {
         expect(document.getElementById("score").innerText).toEqual(0);
     });
+
+    // Define a test case that checks that the "data-listener" attribute is set to "true" for all circle elements
+test("expect data-listener to be true", () => {
+
+    // Call the newGame function to set up the initial game state
+    newGame();
+
+    // Get all elements with class name "circle"
+    const elements = document.getElementsByClassName("circle");
+
+    // Iterate over each element and check that the "data-listener" attribute is set to "true"
+    for (let element of elements) {
+        expect(element.getAttribute("data-listener")).toEqual("true");
+    }
 });
+
+});
+
 
 /**
 
