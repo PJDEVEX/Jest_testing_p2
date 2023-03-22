@@ -6,6 +6,9 @@ let game = {
     // current game progress
     playerMoves: [], // Initialize an empty array to store 
     // player moves
+    turnNumber: 0,
+    lastButton: "",
+    turnInProgress: false,
     choices: ["button1", "button2", "button3", "button4"],
     // Initialize an array with the available choices
 };
@@ -25,10 +28,13 @@ function newGame() {
     for (let circle of document.getElementsByClassName("circle")) {
         if (circle.getAttribute("data-listener") !== "true") {
             circle.addEventListener("click", (e) => {
-                let move = e.target.getAttribute("id");
-                lightsOn(move);
-                game.playerMoves.push(move);
-                playerTurn();
+                if (game.currentGame.length > 0 && !game.turnInProgress) {
+                    let move = e.target.getAttribute("id");
+                    game.lastButton = move;
+                    lightsOn(move);
+                    game.playerMoves.push(move);
+                    playerTurn();
+                }
             });
             circle.setAttribute("data-listener", "true");
         }
@@ -46,20 +52,38 @@ function newGame() {
 function addTurn() {
     game.playerMoves = [];
     game.currentGame.push(game.choices[(Math.floor(Math.random() * 4))]);
-    showTurn();
+    showTurns();
 }
 
-
-
 /**
-
-Sets the inner text of the HTML element with the id "score"
-to the value of the score property of the game object.
-@function
-@name showScore
-*/
-function showScore() {
-    document.getElementById("score").innerText = game.score;
+ * Updates the game's turnNumber variable to 0 and then plays the current game sequence
+ * by calling the lightsOn() function for each element in the game.currentGame array
+ * at an interval of 800 milliseconds. The game.turnNumber variable is incremented
+ * for each element in the array, and clearInterval() is called when the end of the array
+ * is reached.
+ *
+ * @function
+ * @name showTurns
+ * @global
+ * 
+ * @property {object} game - The game object containing the current game state.
+ * @property {number} game.turnNumber - The current turn number.
+ * @property {array} game.currentGame - The current game sequence to play.
+ * 
+ * @returns {undefined}
+ *
+ */
+function showTurns() {
+    game.turnInProgress = true;
+    game.turnNumber = 0;
+    let turns = setInterval(function () {
+        lightsOn(game.currentGame[game.turnNumber]);
+        game.turnNumber++;
+        if (game.turnNumber >= game.currentGame.length) {
+            clearInterval(turns);
+            game.turnInProgress = false;
+        }
+    }, 800);
 }
 
 /**
@@ -74,53 +98,51 @@ turning off the button highlight.
 */
 function lightsOn(circ) {
     document.getElementById(circ).classList.add("light");
-    setTimeout(() => {
-        document.getElementById(circ).classList.remove.apply("light");
+    setTimeout(function () {
+        document.getElementById(circ).classList.remove("light");
     }, 400);
 }
 
 /**
- * Updates the game's turnNumber variable to 0 and then plays the current game sequence
- * by calling the lightsOn() function for each element in the game.currentGame array
- * at an interval of 800 milliseconds. The game.turnNumber variable is incremented
- * for each element in the array, and clearInterval() is called when the end of the array
- * is reached.
- *
- * @function
- * @name showTurn
- * @global
+ * This function represents the turn of the player in the game. 
+ * It compares the player's moves with the current game's moves and 
+ * checks if the player has made a correct move or not. 
+ * If the move is correct, it increments the player's score, 
+ * displays the updated score and adds a new turn. 
+ * If the move is incorrect, 
+ * it displays an alert with a message "Wrong move!" and starts a new game.
  * 
- * @property {object} game - The game object containing the current game state.
- * @property {number} game.turnNumber - The current turn number.
- * @property {array} game.currentGame - The current game sequence to play.
- * 
- * @returns {undefined}
- *
+ * @returns void
  */
-function showTurn() {
-    game.turnNumber = 0;
-    let turn = setInterval(() => {
-        lightsOn(game.currentGame[game.turnNumber]);
-        game.turnNumber++;
-        if (game.turnNumber >= game.currentGame.length) {
-            clearInterval(turn);
+function playerTurn() {
+    let i = game.playerMoves.length - 1; // Index of the 
+    // last move made by the player
+    if (game.currentGame[i] === game.playerMoves[i]) {
+        // Check if the last move made by the player is 
+        // the same as the one made by the game
+        if (game.currentGame.length === game.playerMoves.length) {
+            // Check if the player has completed the current game
+            game.score++; // Increment the player's score
+            showScore(); // Display the updated score
+            addTurn(); // Add a new turn
         }
-    }, 800);
+    } else { // If the last move made by the player is 
+        // not the same as the one made by the game
+        alert("Wrong move!"); // Display an alert 
+        // with a message "Wrong move!"
+        newGame(); // Start a new game
+    }
 }
 
+/**
 
-function playerTurn() {
-    let i = game.playerMoves.length - 1;
-    if (game.currentGame[i] === game.playerMoves[i]) {
-        if (game.currentGame.length === game.playerMoves.length) {
-            game.score++;
-            showScore();
-            addTurn();
-        }
-    } else {
-        alert("Wrong move!");
-        newGame();
-    }
+Sets the inner text of the HTML element with the id "score"
+to the value of the score property of the game object.
+@function
+@name showScore
+*/
+function showScore() {
+    document.getElementById("score").innerText = game.score;
 }
 
 /**
@@ -132,7 +154,7 @@ function playerTurn() {
  * @exports showScore - A function that displays the player's current score.
  * @exports addTurn - A function that adds a new turn to the game sequence and updates the game state.
  * @exports lightsOn - A function that turns on the corresponding lights and plays the sound for a given color.
- * @exports showTurn - A function that plays the current game sequence.
+ * @exports showTurns - A function that plays the current game sequence.
  * 
  * @type {object}
  * @property {object} game - The game object containing the current game state.
@@ -140,7 +162,7 @@ function playerTurn() {
  * @property {function} showScore - A function that displays the player's current score.
  * @property {function} addTurn - A function that adds a new turn to the game sequence and updates the game state.
  * @property {function} lightsOn - A function that turns on the corresponding lights and plays the sound for a given color.
- * @property {function} showTurn - A function that plays the current game sequence.
+ * @property {function} showTurns - A function that plays the current game sequence.
  */
 module.exports = {
     game,
@@ -148,7 +170,7 @@ module.exports = {
     showScore,
     addTurn,
     lightsOn,
-    showTurn,
+    showTurns,
     playerTurn
 };
 

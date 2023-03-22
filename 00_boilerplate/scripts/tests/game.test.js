@@ -9,8 +9,23 @@
  * @property {function} lightsOn - The function that lights up the game buttons.
  * @property {function} showTurn - The function that plays the current game sequence.
  */
-const { game, newGame, showScore, addTurn, lightsOn, showTurn, playerTurn } = require("../game");
-
+const { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn } = require("../game");
+/**
+ * This code sets up a spy on the global `window.alert` 
+ * function using Jest's `spyOn` function. 
+ * The `mockImplementation` method 
+ * is used to replace the alert function with 
+ * an empty function that does nothing. 
+ * This is useful for testing purposes, 
+ * as it allows you to assert that 
+ * an alert was called without actually 
+ * showing an alert to the user.
+ *
+ * @param {Function} window.alert 
+ * - The global `alert` function that is being spied on and mocked.
+ * @returns {void}
+ */
+jest.spyOn(window, "alert").mockImplementation(() => { });
 
 
 /**
@@ -68,15 +83,24 @@ describe("Game object contains correct keys", () => {
     test("choices contains correct ids", () => {
         expect(game.choices).toEqual(["button1", "button2", "button3", "button4"]);
     });
+
+    test("lastButton key exists", () => {
+        expect("lastButton" in game).toBe(true);
+    });
+    test("turnInProgress key exists", () => {
+        expect("turnInProgress" in game).toBe(true);
+    });
+    test("turnInProgress key value is false", () => {
+        expect("turnInProgress" in game).toBe(true);
+    });
 });
+
 
 /**
 * Describes a test suite for the newGame function.
 * The test checks if the game score is set to
 * zero after calling the newGame function.
 */
-
-
 describe("newGame works correctly", () => {
     /**
     * Before the test, sets the game score to 42,
@@ -130,19 +154,19 @@ describe("newGame works correctly", () => {
     });
 
     // Define a test case that checks that the "data-listener" attribute is set to "true" for all circle elements
-test("expect data-listener to be true", () => {
+    test("expect data-listener to be true", () => {
 
-    // Call the newGame function to set up the initial game state
-    newGame();
+        // Call the newGame function to set up the initial game state
+        newGame();
 
-    // Get all elements with class name "circle"
-    const elements = document.getElementsByClassName("circle");
+        // Get all elements with class name "circle"
+        const elements = document.getElementsByClassName("circle");
 
-    // Iterate over each element and check that the "data-listener" attribute is set to "true"
-    for (let element of elements) {
-        expect(element.getAttribute("data-listener")).toEqual("true");
-    }
-});
+        // Iterate over each element and check that the "data-listener" attribute is set to "true"
+        for (let element of elements) {
+            expect(element.getAttribute("data-listener")).toEqual("true");
+        }
+    });
 
 });
 
@@ -198,21 +222,56 @@ describe("gameplay works correctly", () => {
         expect(button.classList).toContain("light");
     });
 
-    test("showTurn should update game.turnNumber", () => {
+    test("should toggle turnInProgress to true", () => {
+        showTurns();
+        expect(game.turnInProgress).toBe(true);
+    });
+
+    test("showTurns should update game.turnNumber", () => {
         // Set the initial value of game.turnNumber to 42
         game.turnNumber = 42;
-      
-        // Call the showTurn function
-        showTurn();
-      
+
+        // Call the showTurns function
+        showTurns();
+
         // Expect the value of game.turnNumber to be 0
         expect(game.turnNumber).toBe(0);
-      });
-      test("should increment the score if the turn is correct", () => {
+    });
+    test("should increment the score if the turn is correct", () => {
         game.playerMoves.push(game.currentGame[0]);
         playerTurn();
         expect(game.score).toBe(1);
     });
+
+    /**
+     * This test checks whether the `playerTurn()` 
+     * function correctly calls the global `window.alert` 
+     * function with the message "Wrong Move!" 
+     * when the player makes an incorrect move. 
+     *
+     * It first pushes a "wrong" move into 
+     * the `game.playerMoves` array, calls 
+     * the `playerTurn()` function, and then 
+     * asserts that the `window.alert` function
+     *  was called with the correct message 
+     * using Jest's `toBeCalledWith()` method. 
+     * 
+     * @param {string} "should call an alert 
+     * if the mover is wrong" - 
+     * A description of the test case.
+     * @param {function} () => {...} - 
+     * A function that defines the test case.
+     * @returns {void}
+     */
+    test("should call an alert if the mover is wrong", () => {
+        game.playerMoves.push("wrong");
+        // Push a "wrong" move into the game.playerMoves array
+        playerTurn(); // Call the playerTurn() function
+        expect(window.alert).toBeCalledWith("Wrong move!");
+        // Assert that the window.alert function 
+        // was called with the correct message
+    });
+
 
     test("clicking during computer sequence should fail", () => {
         showTurns();
