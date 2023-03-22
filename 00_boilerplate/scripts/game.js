@@ -108,6 +108,21 @@ function showTurn() {
     }, 800);
 }
 
+
+function playerTurn() {
+    let i = game.playerMoves.length - 1;
+    if (game.currentGame[i] === game.playerMoves[i]) {
+        if (game.currentGame.length === game.playerMoves.length) {
+            game.score++;
+            showScore();
+            addTurn();
+        }
+    } else {
+        alert("Wrong move!");
+        newGame();
+    }
+}
+
 /**
  * Exports the game-related functions as an object so that they can be accessed by other files.
  * 
@@ -133,7 +148,8 @@ module.exports = {
     showScore,
     addTurn,
     lightsOn,
-    showTurn
+    showTurn,
+    playerTurn
 };
 
 

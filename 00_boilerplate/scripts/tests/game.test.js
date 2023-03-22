@@ -9,7 +9,7 @@
  * @property {function} lightsOn - The function that lights up the game buttons.
  * @property {function} showTurn - The function that plays the current game sequence.
  */
-const { game, newGame, showScore, addTurn, lightsOn, showTurn } = require("../game");
+const { game, newGame, showScore, addTurn, lightsOn, showTurn, playerTurn } = require("../game");
 
 
 
@@ -208,4 +208,16 @@ describe("gameplay works correctly", () => {
         // Expect the value of game.turnNumber to be 0
         expect(game.turnNumber).toBe(0);
       });
+      test("should increment the score if the turn is correct", () => {
+        game.playerMoves.push(game.currentGame[0]);
+        playerTurn();
+        expect(game.score).toBe(1);
+    });
+
+    test("clicking during computer sequence should fail", () => {
+        showTurns();
+        game.lastButton = "";
+        document.getElementById("button2").click();
+        expect(game.lastButton).toEqual("");
+    });
 });
